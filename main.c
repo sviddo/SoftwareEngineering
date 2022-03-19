@@ -29,6 +29,7 @@ int check_valid_num(int num, int val);
 void AddElem(struct Sbook ** Head, int notes);
 int check_valid_string(char str_to_check[20]);
 void SortListYear(struct Sbook ** Head, int notes);
+int total(struct Sbook * tmp);
 
 
 
@@ -58,6 +59,10 @@ int main(void) {
 
     struct Sbook * Head = SingleLinkedList(file, notes);  // pointer on created single-linked list
 
+    fclose(file);
+    free(file);
+    file = NULL;
+
     PrintList(Head, "Source list: ", log_file);
 
     char answer_add_input;
@@ -68,11 +73,19 @@ int main(void) {
         AddElem(&Head, notes);
         notes += 1;
     }
+    printf("\n\n");
 
     double AverageCost = CalculateAverageCost(Head, notes);  // calculating average cost of all books
     double AveragePages = CalculateAveragePages(Head, notes);  // calculating average pages number of all books
 
-    fclose(file);
+    char answer_total;
+    printf("Do you want to calculate all books total cost ? y/n: ");
+    scanf(" %c", &answer_total);
+    if(answer_total == 'y')
+    {
+        printf("Total cost of all books in library: %d\n", total(Head));
+    }
+    printf("\n\n");
 
 
     PrintList(Head, "Source list after element adding: ", log_file);
@@ -88,6 +101,7 @@ int main(void) {
     char answer_year;
     printf("Do you want to additionally sort the list by year? y/n: ");
     scanf(" %c", &answer_year);
+    printf("\n");
     if(answer_year == 'y')
     {
         struct Sbook * tmp = Head;
@@ -104,6 +118,8 @@ int main(void) {
     PrintList(Head, "List after elements removing: ", log_file);
 
     fclose(log_file);
+    free(log_file);
+    log_file = NULL;
 
 
     free(Head);
@@ -407,7 +423,6 @@ void AddElem(struct Sbook ** Head, int notes)
     int position;
     printf("Enter the position where you want to insert your element: ");
     scanf("%d", &position);
-    printf("\n\n");
 
     if(position == 1)
     {
@@ -502,4 +517,19 @@ void SortListYear(struct Sbook ** Head, int notes)
             ptr = ptr -> nextNode;
         }
     }
+}
+
+
+
+int total(struct Sbook * tmp)
+{
+    int sum = 0;
+
+    while(tmp != NULL)
+    {
+        sum += tmp -> cost;
+        tmp = tmp -> nextNode;
+    }
+
+    return sum;
 }
